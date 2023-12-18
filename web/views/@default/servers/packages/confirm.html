@@ -1,0 +1,30 @@
+{$layout}
+{$template "menu"}
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+
+    <input type="hidden" name="packageId" :value="packageId"/>
+    <input type="hidden" name="regionId" :value="regionId"/>
+    <input type="hidden" name="periodId" :value="periodId"/>
+    <input type="hidden" name="count" :value="count"/>
+
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">流量包</td>
+            <td>[{{packageName}} / {{regionName}} / {{periodName}}] x {{count}}</td>
+        </tr>
+        <tr>
+            <td>价格</td>
+            <td>￥{{amount}}元</td>
+        </tr>
+        <tr>
+            <td>支付方式</td>
+            <td>
+                <pay-method-selector></pay-method-selector>
+            </td>
+        </tr>
+    </table>
+
+    <submit-btn>确定购买</submit-btn> &nbsp; <a href="/servers/packages/buy" @click.prevent="goBack()">上一步</a>
+</form>

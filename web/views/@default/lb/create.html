@@ -1,0 +1,78 @@
+{$layout}
+{$template "menu"}
+
+<div class="margin"></div>
+<form class="ui form" method="post" data-tea-success="success" data-tea-action="$">
+    <csrf-token></csrf-token>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">网站名称 *</td>
+            <td>
+                <input type="text" name="name" maxlength="50" ref="focus"/>
+                <p class="comment">请设置一个容易识别的网站名称。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>网站类型 *</td>
+            <td>
+                <select class="ui dropdown auto-width" name="serverType" v-model="serverType" @change="changeServerType">
+                    <option v-for="serverType in serverTypes" :value="serverType.code">{{serverType.name}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>监听协议 *</td>
+            <td>
+                <span v-if="serverType == 'tcpProxy'">
+                    <checkbox name="protocols" :key="'tcp'" :v-value="'tcp'" v-model="enableTCP">TCP</checkbox> &nbsp; &nbsp; &nbsp;
+                <checkbox name="protocols" :key="'tls'" :v-value="'tls'" v-model="enableTLS">TLS</checkbox>
+                </span>
+                <span v-if="serverType == 'udpProxy'">
+                    <checkbox name="protocols"  :key="'udp'" :v-value="'udp'" v-model="enableUDP">UDP</checkbox>
+                </span>
+            </td>
+        </tr>
+        <tr v-show="enableTLS">
+            <td>HTTPS证书 *</td>
+            <td>
+                <ssl-certs-box></ssl-certs-box>
+            </td>
+        </tr>
+        <tr v-if="canSpecifyTCPPort && enableTCP">
+            <td>TCP监听端口 *</td>
+            <td>
+                <values-box size="5" maxlength="5" placeholder="端口" name="tcpPorts"></values-box>
+                <p class="comment">添加服务器监听用户网络连接的端口，需要在1024-65534之间。TCP和TLS端口之间不能重复。</p>
+            </td>
+        </tr>
+        <tr v-if="canSpecifyTCPPort && enableTLS">
+            <td>TLS监听端口 *</td>
+            <td>
+                <values-box size="5" maxlength="5" placeholder="端口" name="tlsPorts"></values-box>
+                <p class="comment">添加服务器监听用户网络连接的端口，需要在1024-65534之间。TCP和TLS端口之间不能重复。</p>
+            </td>
+        </tr>
+        <tr v-if="!canSpecifyTCPPort && serverType == 'tcpProxy'">
+            <td>TCP/TLS监听端口</td>
+            <td>保存后自动生成</td>
+        </tr>
+        <tr v-if="canSpecifyUDPPort && enableUDP">
+            <td>UDP监听端口 *</td>
+            <td>
+                <values-box size="5" maxlength="5" placeholder="端口" name="udpPorts"></values-box>
+                <p class="comment">添加服务器监听用户网络连接的端口，需要在1024-65534之间。</p>
+            </td>
+        </tr>
+        <tr v-if="!canSpecifyUDPPort && serverType == 'udpProxy'">
+            <td>UDP监听端口</td>
+            <td>保存后自动生成</td>
+        </tr>
+        <tr>
+            <td>源站信息 *</td>
+            <td>
+                <origin-input-box :v-family="family" ref="originInputBox"></origin-input-box>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>

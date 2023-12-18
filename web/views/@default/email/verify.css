@@ -1,0 +1,32 @@
+.form-box {
+  position: fixed;
+  top: 2.5em;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+form {
+  position: fixed;
+  width: 30em;
+  top: 50%;
+  left: 50%;
+  margin-left: -15em;
+  margin-top: -16em;
+}
+span.red,
+pre.red {
+  color: #db2828;
+}
+.home-link-box {
+  margin-top: 1.5em;
+}
+a.enabled,
+span.enabled,
+span.green {
+  color: #21ba45;
+}
+h4 {
+  font-weight: normal !important;
+  font-size: 1.2em !important;
+}
+/*# sourceMappingURL=verify.css.map */

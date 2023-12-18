@@ -1,0 +1,19 @@
+{$layout}
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
+	<form class="ui form" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="serverId" :value="serverId"/>
+        <table class="ui table selectable definition">
+            <tr>
+                <td class="title">网站分组</td>
+                <td>
+                    <server-group-selector :v-groups="groups"></server-group-selector>
+                </td>
+            </tr>
+        </table>
+        <submit-btn></submit-btn>
+    </form>
+</div>

@@ -1,0 +1,48 @@
+{$layout}
+
+<first-menu>
+    <menu-item href="/tickets?status=none" code="none">进行中({{countNewTickets}})</menu-item>
+    <menu-item href="/tickets?status=solved" code="solved">已解决</menu-item>
+    <menu-item href="/tickets?status=closed" code="closed">已关闭</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item @click.prevent="createTicket">[提交工单]</menu-item>
+</first-menu>
+
+<not-found-box v-if="tickets.length == 0">暂时还没有工单。</not-found-box>
+
+<table class="ui table selectable celled" v-if="tickets.length > 0">
+    <thead>
+    <tr>
+        <th>工单标题</th>
+        <th class="three wide">最后操作时间</th>
+        <th class="three wide">最后操作人</th>
+        <th class="two wide">分类</th>
+        <th class="width6">状态</th>
+        <th class="one op">操作</th>
+    </tr>
+    </thead>
+    <tr v-for="ticket in tickets">
+        <td>
+            <a :href="'/tickets/ticket?ticketId=' + ticket.id + '&fromURL=' + currentURL">{{ticket.subject}}</a>
+        </td>
+        <td>{{ticket.lastLogTime}}</td>
+        <td>
+            <span v-if="ticket.latestLog != null && ticket.latestLog.admin != null">
+               <i class="icon secret user"></i> 管理员
+            </span>
+            <span v-else class="grey">自己</span>
+        </td>
+        <td>
+            <span v-if="ticket.category != null">{{ticket.category.name}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td>
+            <span :class="{olive: ticket.status == 'none', green: ticket.status == 'solved', red: ticket.status == 'closed'}">{{ticket.statusName}}</span>
+        </td>
+        <td>
+            <a :href="'/tickets/ticket?ticketId=' + ticket.id+ '&fromURL=' + currentURL">详情</a>
+        </td>
+    </tr>
+</table>
+
+<page-box></page-box>

@@ -1,0 +1,30 @@
+.identities-box {
+  height: 14em;
+  width: 45em;
+  margin: 5em auto;
+}
+.identities-box .identity-box {
+  float: left;
+  width: 20em;
+  border: 1px #ccc solid;
+  padding: 1em 2em;
+  text-align: center;
+  margin-left: 1em;
+  margin-right: 1em;
+  height: 8.8em;
+  border-radius: 0.4em;
+}
+.identities-box .identity-box .real-name {
+  font-size: 1.2em;
+  line-height: 1.5;
+}
+.identities-box .identity-box .status-box {
+  line-height: 2;
+  margin-top: 0.5em;
+  color: #999;
+}
+.identities-box .identity-box:hover {
+  background: #eee;
+  cursor: pointer;
+}
+/*# sourceMappingURL=index.css.map */

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    {$if eq .faviconFileId 0}
+    <link rel="shortcut icon" href="/images/favicon.png"/>
+    {$else}
+    <link rel="shortcut icon" href="/ui/image/{$ .faviconFileId}"/>
+    {$end}
+    <title>注册{$.systemName}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    {$TEA.VUE}
+    {$TEA.SEMANTIC}
+	<script type="text/javascript" src="/js/utils.min.js"></script>
+	<script type="text/javascript" src="/js/sweetalert2/dist/sweetalert2.all.min.js"></script>
+	<script type="text/javascript" src="/js/components.js?v=1.0.0"></script>
+</head>
+<body>
+<div>
+	{$template "/menu"}
+
+	<div class="form-box">
+		<form method="post" class="ui form" data-tea-action="$" data-tea-before="submitBefore" data-tea-done="submitDone" data-tea-success="submitSuccess" autocomplete="off">
+			<csrf-token></csrf-token>
+			<input type="hidden" name="token" v-model="token"/>
+			<div class="ui segment stacked">
+				<div class="ui header">
+					注册{$.systemName}
+				</div>
+				<div class="ui field">
+                    <p class="comment">用户名 *（长度不小于6位，只能包含英文字母、数字、下划线）：</p>
+					<div class="ui left icon input">
+						<i class="ui user icon small"></i>
+						<input type="text" name="username" v-model="username" placeholder="请输入用户名" maxlength="200" ref="usernameRef"/>
+					</div>
+				</div>
+				<div class="ui field">
+                    <p class="comment">登录密码 *（长度不小于6位<span v-if="complexPassword">，且必须包含大写字母和小写字母</span>）：</p>
+					<div class="ui left icon input">
+						<i class="ui lock icon small"></i>
+						<input type="password" name="password" v-model="password" placeholder="请输入密码" maxlength="100" @input="changePassword()" ref="passwordRef"/>
+					</div>
+				</div>
+                <div class="ui field">
+                    <p class="comment">确认密码 *：</p>
+                    <div class="ui left icon input">
+                        <i class="ui lock icon small"></i>
+                        <input type="password" name="password2" placeholder="请再次输入密码" maxlength="200"/>
+                    </div>
+                </div>
+                <div class="ui field">
+                    <p class="comment">手机号 *：</p>
+                    <div class="ui input">
+                        <input type="text" name="mobile" maxlength="11" placeholder="手机号"/>
+                    </div>
+                </div>
+                <div class="ui field">
+                    <p class="comment">常用电子邮箱 *：</p>
+                    <div class="ui input">
+                        <input type="text" name="email" maxlength="100" placeholder="常用电子邮箱"/>
+                    </div>
+                </div>
+                <div class="ui field">
+                    <p class="comment">用户姓名或者公司名称 *:</p>
+                    <div class="ui input">
+                        <input type="text" name="fullname" maxlength="50" placeholder="用户姓名或者公司名称"/>
+                    </div>
+                </div>
+
+				<button class="ui button primary fluid" type="submit" v-if="!isSubmitting">注册</button>
+				<button class="ui button primary fluid disabled" type="submit" v-if="isSubmitting">注册中...</button>
+
+                <div class="register-box">
+                    <a href="/login">已有账号，去登录 &raquo;</a>
+                </div>
+			</div>
+		</form>
+	</div>
+
+</div>
+
+</body>
+</html>

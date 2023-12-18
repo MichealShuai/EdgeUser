@@ -1,0 +1,21 @@
+{$layout}
+{$template "menu"}
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">域名 *</td>
+            <td>
+                <textarea rows="15" name="names" placeholder="每行一个域名" ref="namesInput"></textarea>
+            </td>
+        </tr>
+        <tr v-if="hasGroups">
+            <td>所属分组</td>
+            <td>
+                <ns-domain-group-selector ref="groupSelector"></ns-domain-group-selector>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>

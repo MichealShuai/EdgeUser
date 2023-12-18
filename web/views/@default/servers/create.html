@@ -1,0 +1,82 @@
+{$layout}
+{$template "menu"}
+
+<p class="ui message warning" v-show="clusterId == 0">
+    需要管理员在后台设置当前用户所属集群后才能继续操作。
+</p>
+
+<form class="ui form" method="post" data-tea-action="$" data-tea-success="success" data-tea-fail="fail" v-show="clusterId > 0">
+    <csrf-token></csrf-token>
+
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">加速域名 *</td>
+            <td>
+                <server-name-box ref="serverNameBox" ref="serverNameBox"></server-name-box>
+            </td>
+        </tr>
+        <tr>
+            <td>域名协议 *</td>
+            <td>
+                <checkbox name="protocols" :v-value="'http'">HTTP</checkbox> &nbsp; &nbsp; &nbsp;
+                <checkbox name="protocols" :v-value="'https'" v-model="supportHTTPS">HTTPS</checkbox>
+            </td>
+        </tr>
+        <tr v-show="supportHTTPS">
+            <td>HTTPS证书 *</td>
+            <td>
+                <ssl-certs-box :v-domains="findServerNames"></ssl-certs-box>
+            </td>
+        </tr>
+        <tr>
+            <td>源站信息 *</td>
+            <td>
+                <origin-input-box :v-oss-types="ossTypes"></origin-input-box>
+            </td>
+        </tr>
+        <tr>
+            <td>回源主机名 *</td>
+            <td>
+                <radio name="requestHostType" :v-value="0" v-model="requestHostType">跟随CDN服务</radio> &nbsp;
+                <radio name="requestHostType" :v-value="1" v-model="requestHostType">跟随源站</radio> &nbsp;
+                <radio name="requestHostType" :v-value="2" v-model="requestHostType">自定义</radio>
+                <div v-show="requestHostType == 2" style="margin-top: 0.8em">
+                    <input type="text" name="requestHost" placeholder="比如example.com" v-model="requestHost"/>
+                </div>
+                <p class="comment">请求源站时的Host，用于设置访问源站的站点域名
+                    <span v-if="requestHostType == 0">，"跟随CDN服务"是指访问源站的站点域名和当前CDN服务保持一致</span>
+                    <span v-if="requestHostType == 1">，"跟随源站"是指访问源站的站点域名仍然是填写的源站地址中的信息，不随CDN服务域名改变而改变</span>
+                    <span v-if="requestHostType == 2">，自定义Host内容中支持请求变量</span>。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>缓存设置</td>
+            <td>
+                <cache-cond-box></cache-cond-box>
+            </td>
+        </tr>
+        <tr v-show="requirePlan || userPlans.length > 0">
+            <td>绑定套餐 <span v-if="requirePlan">*</span></td>
+            <td>
+                <input type="hidden" name="isChanged" value="1"/>
+                <span v-if="userPlans.length == 0 && !requirePlan" class="disabled">当前还没有可以使用的套餐。</span>
+                <span v-if="userPlans.length == 0 && requirePlan" class="red"><a href="/plans"><span class="red">当前还没有可以使用的套餐，请先购买套餐</span></a> 。</span>
+                <div v-else>
+                    <select class="ui dropdown auto-width" name="userPlanId">
+                        <option value="0" v-if="!requirePlan">[不使用套餐]</option>
+                        <option value="0" v-if="requirePlan">[选择套餐]</option>
+                        <option v-for="userPlan in userPlans" :value="userPlan.id">{{userPlan.name}}（{{userPlan.dayTo}}）</option>
+                    </select>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>所属分组</td>
+            <td>
+                <server-group-selector></server-group-selector>
+            </td>
+        </tr>
+    </table>
+
+    <submit-btn></submit-btn>
+</form>

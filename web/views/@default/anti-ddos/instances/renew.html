@@ -1,0 +1,62 @@
+{$layout}
+
+<!-- 步骤 -->
+<div class="ui steps fluid">
+    <div class="step active">
+        <a href="/anti-ddos/instances">选择要续费的实例</a>
+    </div>
+    <div class="step">
+        <strong>支付</strong>
+    </div>
+</div>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+    <input type="hidden" name="userInstanceId" :value="userInstance.id"/>
+    <input type="hidden" name="periodId" :value="selectedPeriodId"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td>高防产品</td>
+            <td>
+                <div v-if="userInstance.package.id > 0">{{userInstance.package.summary}}</div>
+                <span v-else class="red">已删除</span>
+            </td>
+        </tr>
+        <tr>
+            <td>高防IP</td>
+            <td>
+                <div v-if="userInstance.instance.id > 0">
+                    <div v-for="ip in userInstance.instance.ipAddresses">{{ip}}</div>
+                </div>
+                <span v-else class="red">已删除</span>
+            </td>
+        </tr>
+        <tr>
+            <td>当前有效期</td>
+            <td>{{userInstance.dayTo}}
+                <p class="comment" v-if="userInstance.isExpired">
+                    <span class="red">已过期，续费后新的有效期将会从今天（{{userInstance.today}}）开始。</span>
+                </p>
+                <p class="comment" v-else>续费后，将会在此基础上增加新的有效期。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>新续有效期 *</td>
+            <td>
+                <div v-if="allPeriods.length > 0">
+                    <a v-for="period in allPeriods" class="ui label basic" :class="{blue: period.id == selectedPeriodId}" @click.prevent="selectPeriod(period.id)">{{period.count}}{{period.unitName}}</a>
+                </div>
+                <span v-else class="red">没有可用的有效期</span>
+            </td>
+        </tr>
+        <tr>
+            <td>价格</td>
+            <td>
+                <span v-if="amount == 0" class="disabled">没有找到对应价格</span>
+                <span v-if="amount > 0">{{amount}}元</span>
+                <p class="comment">管理员操作时，此价格仅供展示，并不会从用户账户中扣款。</p>
+            </td>
+        </tr>
+    </table>
+    <button class="ui button primary" type="button" @click.prevent="goNext()" v-if="amount > 0">下一步</button>
+</form>

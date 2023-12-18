@@ -1,0 +1,25 @@
+{$layout}
+
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">状态</td>
+        <td>
+            <span v-if="otp != null && otp.isOn" class="green">已启用OTP认证</span>
+            <span v-else class="disabled">未启用</span> &nbsp; &nbsp;
+            <a href="" @click.prevent="disable" v-if="otp != null && otp.isOn">[停用]</a>
+            <a href="" @click.prevent="enable" v-if="otp == null || !otp.isOn">[启用]</a>
+            <p class="comment">启用后，用户每次登录时需要输入动态密码。</p>
+        </td>
+    </tr>
+    <tr v-if="otp != null && otp.isOn">
+        <td>认证二维码</td>
+        <td>
+            <img :src="'/settings/mfa/otpQrcode'" alt=""/>
+            <p class="comment">可以通过二维码快速添加OTP认证信息到认证App中。</p>
+        </td>
+    </tr>
+    <tr v-if="otp != null && otp.isOn">
+        <td>密钥</td>
+        <td>{{otp.params.secret}}</td>
+    </tr>
+</table>

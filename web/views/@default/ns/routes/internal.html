@@ -1,0 +1,91 @@
+{$layout}
+{$template "menu"}
+
+<second-menu>
+    <menu-item :class="{active: selectedType == 'isp'}" @click.prevent="selectRouteType('isp')">运营商</menu-item>
+    <menu-item :class="{active: selectedType == 'chinaProvince'}" @click.prevent="selectRouteType('chinaProvince')">中国省市</menu-item>
+    <menu-item :class="{active: selectedType == 'worldRegion'}" @click.prevent="selectRouteType('worldRegion')">全球国家地区</menu-item>
+    <menu-item :class="{active: selectedType == 'agent'}" @click.prevent="selectRouteType('agent')">搜索引擎</menu-item>
+    <span class="item disabled" v-if="publicCategories.length > 0">|</span>
+    <menu-item :class="{active: selectedType == 'category:' + category.id}" v-for="category in publicCategories" @click.prevent="selectRouteType('category:' + category.id)">{{category.name}}</menu-item>
+</second-menu>
+
+<!-- 运营商 -->
+<div v-if="selectedType == 'isp'">
+    <table class="ui table selectable celled" style="width: 30em">
+        <thead>
+            <tr>
+                <th>运营商</th>
+                <th>代号</th>
+            </tr>
+        </thead>
+        <tr v-for="route in ispRoutes">
+            <td style="width: 50%">{{route.name}}</td>
+            <td>{{route.code}}</td>
+        </tr>
+    </table>
+</div>
+
+<!-- 中国省市 -->
+<div v-if="selectedType == 'chinaProvince'">
+    <table class="ui table selectable celled" style="width: 30em">
+        <thead>
+            <tr>
+                <th>省市</th>
+                <th>代号</th>
+            </tr>
+        </thead>
+        <tr v-for="route in chinaProvinceRoutes">
+            <td style="width: 50%">{{route.name}}</td>
+            <td>{{route.code}}</td>
+        </tr>
+    </table>
+</div>
+
+<!-- 全球国家地区 -->
+<div v-if="selectedType == 'worldRegion'">
+    <table class="ui table selectable celled" style="width: 30em">
+        <thead>
+            <tr>
+                <th>国家/地区</th>
+                <th>代号</th>
+            </tr>
+        </thead>
+        <tr v-for="route in worldRegionRoutes">
+            <td style="width: 50%">{{route.name}}</td>
+            <td>{{route.code}}</td>
+        </tr>
+    </table>
+</div>
+
+<!-- 搜索引擎 -->
+<div v-if="selectedType == 'agent'">
+    <table class="ui table selectable celled" style="width: 30em">
+        <thead>
+        <tr>
+            <th>搜索引擎</th>
+            <th>代号</th>
+        </tr>
+        </thead>
+        <tr v-for="route in agentRoutes">
+            <td style="width: 50%">{{route.name}}</td>
+            <td>{{route.code}}</td>
+        </tr>
+    </table>
+</div>
+
+<!-- 官方分类 -->
+<div v-if="selectedType.startsWith('category:')">
+    <table class="ui table selectable celled" style="width: 30em">
+        <thead>
+        <tr>
+            <th>线路名</th>
+            <th>代号</th>
+        </tr>
+        </thead>
+        <tr v-for="route in publicRoutes" v-if="selectedType == 'category:' + route.categoryId">
+            <td style="width: 50%">{{route.name}}</td>
+            <td>{{route.code}}</td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,73 @@
+{$layout}
+
+<first-menu>
+    <menu-item v-if="fromURL.length > 0" :href="fromURL">工单列表</menu-item>
+    <menu-item v-if="fromURL.length == 0" :href="'/tickets?status=' + ticket.status">工单列表</menu-item>
+</first-menu>
+
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">工单标题</td>
+        <td>{{ticket.subject}}</td>
+    </tr>
+    <tr>
+        <td>工单内容</td>
+        <td>
+            <div v-html="ticket.body"></div>
+        </td>
+    </tr>
+    <tr>
+        <td>最后操作时间</td>
+        <td>
+            {{ticket.lastLogTime}}
+        </td>
+    </tr>
+    <tr>
+        <td>分类</td>
+        <td>
+            <span v-if="ticket.category != null">{{ticket.category.name}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+    <tr>
+        <td>状态</td>
+        <td>
+            <span :class="{olive: ticket.status == 'none', green: ticket.status == 'solved', red: ticket.status == 'closed'}">{{ticket.statusName}}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>操作</td>
+        <td>
+            <a href="" @click.prevent="reply(ticket.id)">[回复]</a>
+        </td>
+    </tr>
+</table>
+
+<h4>工单回复</h4>
+<p class="comment" v-if="logs.length == 0">暂时还没有回复。</p>
+
+<table class="ui table selectable" v-if="logs.length > 0" v-for="log in logs">
+    <thead>
+        <tr>
+            <th class="log-header">
+                <span v-if="log.adminId > 0">
+                   <i class="icon secret user"></i> 管理员
+                </span>
+                <span v-if="log.userId > 0" class="grey">
+                    自己
+                </span>
+                @ {{log.createdTime}}
+
+                &nbsp; | &nbsp; <span v-if="log.statusName.length > 0" :class="{olive: log.status == 'none', green: log.status == 'solved', red: log.status == 'closed'}">{{log.statusName}}</span>
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <div v-html="log.comment" v-if="log.comment.length > 0"></div>
+                <span class="disabled" v-else>没有内容</span>
+            </td>
+        </tr>
+    </thead>
+</table>
+
+<page-box></page-box>

@@ -1,0 +1,119 @@
+{$layout "layout_popup"}
+
+<h3>修改源站</h3>
+
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="reverseProxyId" :value="reverseProxyId"/>
+	<input type="hidden" name="originType" :value="originType"/>
+	<input type="hidden" name="originId" :value="originId"/>
+
+	<table class="ui table selectable definition">
+		<tr>
+			<td class="title">源站协议</td>
+			<td>
+				<!-- HTTP -->
+				<select class="ui dropdown auto-width" name="protocol" v-model="origin.protocol" v-if="serverType == 'httpProxy' || serverType == 'httpWeb'" @change="changeProtocol">
+					<option value="http">HTTP</option>
+					<option value="https">HTTPS</option>
+
+                    <!-- 对象存储 -->
+                    <optgroup label="对象存储" v-if="ossTypes.length > 0"></optgroup>
+                    <option v-for="ossType in ossTypes" :value="ossType.code">{{ossType.name}}</option>
+				</select>
+
+				<!-- TCP -->
+				<select class="ui dropdown auto-width" name="protocol" v-model="origin.protocol" v-if="serverType == 'tcpProxy'">
+					<option value="tcp">TCP</option>
+					<option value="tls">TLS</option>
+				</select>
+
+                <!-- UDP -->
+                <select class="ui dropdown auto-width" name="protocol" v-model="origin.protocol" v-if="serverType == 'udpProxy'">
+                    <option value="udp">UDP</option>
+                </select>
+			</td>
+		</tr>
+
+        <!-- 普通源站 -->
+		<tr v-show="!isOSS">
+			<td class="title">源站地址</td>
+			<td>
+                <div class="ui input left labeled">
+                    <span class="ui label">{{origin.protocol.toLowerCase()}}://</span>
+				    <input type="text" name="addr" ref="focus" v-model="origin.addr" @input="changeAddr"/>
+                </div>
+                <p class="comment"><span class="red" v-if="addrError.length > 0">{{addrError}}</span>源站服务器地址，通常是一个IP（或域名）加端口<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
+			</td>
+		</tr>
+        <tr v-if="(isHTTP || origin.protocol == 'tls') && !isOSS">
+            <td>回源主机名</td>
+            <td>
+                <input type="text" name="host"  v-model="origin.host" placeholder="比如example.com" maxlength="100"/>
+                <p class="comment">请求源站时的Host，用于设置访问源站的站点域名<span v-if="isHTTP">，自定义Host内容中支持请求变量</span>。</p>
+            </td>
+        </tr>
+
+        <!-- OSS -->
+        {$ .ossForm}
+
+		<tr>
+			<td colspan="2"><more-options-indicator></more-options-indicator></td>
+		</tr>
+		<tbody v-show="moreOptionsVisible">
+            <tr v-if="origin.protocol == 'https' || origin.protocol == 'tls'">
+                <td>{{origin.protocol.toUpperCase()}}证书</td>
+                <td>
+                    <ssl-certs-box :v-single-mode="true" :v-cert="origin.cert" :v-view-size="'mini'" :v-description="'可以选择连接源站使用的证书；除非源站有特殊需求，否则不需要添加。'"></ssl-certs-box>
+                </td>
+            </tr>
+            <tr v-show="origin.protocol != 'udp'">
+                <td>专属域名</td>
+                <td>
+                    <domains-box :v-domains="origin.domains"></domains-box>
+                    <p class="comment">默认不需要填写，表示支持所有域名。如果填写了专属域名，表示这些源站只会在所列的专属域名被访问时才生效。</p>
+                </td>
+            </tr>
+            <tr v-show="!isOSS">
+                <td>端口跟随</td>
+                <td>
+                    <checkbox name="followPort" v-model="origin.followPort"></checkbox>
+                    <p class="comment">选中后表示源站的端口保持和用户访问的服务端口保持一致；此时的源站地址中的端口号可以任意填写。</p>
+                </td>
+            </tr>
+            <tr v-show="!isOSS && origin.protocol == 'https'">
+                <td>支持HTTP/2</td>
+                <td>
+                    <checkbox name="http2Enabled" v-model="origin.http2Enabled"></checkbox>
+                    <p class="comment">选中后，表示源站支持HTTP/2协议。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>权重</td>
+                <td>
+                    <input type="text" name="weight" maxlength="4" v-model="origin.weight"  style="width:5em"/>
+                    <p class="comment">数字越大，代表分配的请求比例越多。</p>
+                </td>
+            </tr>
+			<tr>
+				<td>名称</td>
+				<td>
+					<input type="text" name="name" maxlength="100" v-model="origin.name"/>
+					<p class="comment">给当前源站起一个容易识别的名称。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>备注</td>
+				<td>
+					<textarea name="description" rows="3" maxlength="100" v-model="origin.description"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>启用当前源站</td>
+				<td>
+					<checkbox name="isOn" :value="origin.isOn"></checkbox>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<submit-btn></submit-btn>
+</form>

@@ -1,0 +1,63 @@
+{$layout}
+
+<div class="margin"></div>
+
+<div class="pay-box">
+    <form class="ui form">
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">订单号</td>
+                <td>{{order.code}}</td>
+            </tr>
+            <tr>
+                <td>订单金额</td>
+                <td>
+                    ￥{{order.amount}}
+                </td>
+            </tr>
+            <tr>
+                <td>订单类型</td>
+                <td>
+                    {{order.typeName}}
+                </td>
+            </tr>
+            <tr>
+                <td>支付方式</td>
+                <td>{{order.method.name}}</td>
+            </tr>
+            <tr>
+                <td>订单状态</td>
+                <td>
+                    <span v-if="order.isExpired" class="red">已过期</span>
+                    <span :class="{green: order.status == 'finished'}" v-else>{{order.statusName}}</span>
+                </td>
+            </tr>
+        </table>
+        <!-- URL支付 -->
+        <a :href="order.payURL" target="_blank" class="ui button primary" type="button" v-if="order.canPay && order.urlQRCodeKey.length == 0" @click="goPay">去支付 &raquo;</a>
+
+        <!-- QRCode支付 -->
+        <a href="" class="ui button primary" type="button" v-if="order.canPay && order.urlQRCodeKey.length > 0" @click.prevent="goPay">去支付 &raquo;</a>
+
+        <span class="red" v-if="order.isExpired">订单已过期，无需支付</span>
+        &nbsp; &nbsp; &nbsp; &nbsp; <a :href="fromURL" v-if="fromURL.length > 0" class="grey">[上一步]</a>
+    </form>
+
+    <div class="pay-mask" v-if="isPaying">
+        <div class="inner-box" :class="{qrcode: order.urlQRCodeKey.length > 0}">
+            <div class="qrcode-box" v-if="order.urlQRCodeKey.length > 0">
+                <div class="qrcode-title-box">
+                    <span v-if="order.qrcodeTitle.length > 0">{{order.qrcodeTitle}}</span>
+                    <span v-else>请扫描以下二维码完成支付：</span>
+                </div>
+                <img :src="'/qrcode?key=' + order.urlQRCodeKey"/>
+            </div>
+            <div>
+                <a :href="returnURL" class="ui button primary large">我已完成支付</a>
+            </div>
+            <div class="cancel">
+                <a href="" @click.prevent="cancel">暂不支付</a>
+            </div>
+        </div>
+    </div>
+</div>

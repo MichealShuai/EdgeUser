@@ -1,0 +1,44 @@
+{$layout}
+
+<h4 style="margin-top: 0.6em">购买域名解析套餐</h4>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+
+    <input type="hidden" name="planId" :value="plan.id"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">套餐类型</td>
+            <td><strong>{{plan.name}}</strong></td>
+        </tr>
+        <tr>
+            <td>付费周期</td>
+            <td>
+                <radio name="period" :v-value="'yearly'" v-model="period">按年</radio> &nbsp; &nbsp;
+                <radio name="period" :v-value="'monthly'" v-model="period">按月</radio>
+            </td>
+        </tr>
+        <tr>
+            <td>价格</td>
+            <td>
+                <span v-if="period == 'yearly'">￥{{plan.yearlyPrice}}元/年</span>
+                <span v-if="period == 'monthly'">￥{{plan.monthlyPrice}}元/月</span>
+            </td>
+        </tr>
+        <tr>
+            <td>有效期</td>
+            <td>
+                <span v-if="period == 'yearly'">{{plan.yearFrom}} 到 {{plan.yearTo}}</span>
+                <span v-if="period == 'monthly'">{{plan.monthFrom}} 到 {{plan.monthTo}}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>支付方式</td>
+            <td>
+                <pay-method-selector @change="changePayMethod"></pay-method-selector>
+            </td>
+        </tr>
+    </table>
+    <submit-btn v-if="methodCode == '@balance'">确定使用余额购买</submit-btn>
+    <submit-btn v-if="methodCode != '@balance'">下一步</submit-btn>
+</form>

@@ -1,0 +1,38 @@
+{$layout "layout_popup"}
+
+<h3 style="margin-bottom: 0.4em">验证域名</h3>
+<p class="comment">当前域名验证后，其下的域名解析才会生效。</p>
+
+<form class="ui form" data-tea-action="$" data-tea-before="before" data-tea-success="submitSuccess" data-tea-done="done">
+    <csrf-token></csrf-token>
+    <input type="hidden" name="domainId" :value="domain.id"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">域名</td>
+            <td>{{domain.name}}</td>
+        </tr>
+        <tr>
+            <td>DNS主机地址</td>
+            <td>
+                <span v-if="hosts.length > 0">
+                    <span v-for="host in hosts" class="ui label basic small">{{host}}</span>
+                </span>
+                <span v-if="hosts.length == 0" class="red">管理员没有设置可用的DNS主机域名，请联系客服。</span>
+                <p class="comment" v-if="hosts.length > 0">请修改域名的DNS主机地址为以上地址。</p>
+            </td>
+        </tr>
+        <tr v-if="requireTXT && txt.length > 0">
+            <td>TXT记录</td>
+            <td>
+                <span v-if="txt.length > 0" id="txt-text">{{txt}}</span> <copy-to-clipboard :v-target="'txt-text'"></copy-to-clipboard>
+                <p class="comment">由于当前域名已被别的用户添加并验证，所以需要重新验证所有权。请在域名中加入以上TXT记录，子域名为<code-label>yanzheng</code-label>，需要在{{txtExpiresTime}}之前完成验证。</p>
+            </td>
+        </tr>
+    </table>
+    <submit-btn v-if="domain.status == 'none' && hosts.length > 0 && (!requireTXT || txt.length > 0)">验证</submit-btn>
+    <div class="margin"></div>
+    <div>
+        <span v-if="isVerifying" class="red">验证中，请稍候...</span>
+        <span class="red" v-if="!isOk && errorMessage.length > 0">验证失败：{{errorMessage}} <span v-if="rawErrorMessage.length > 0">({{rawErrorMessage}})</span></span>
+    </div>
+</form>

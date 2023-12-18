@@ -1,0 +1,76 @@
+{$layout}
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
+    <form class="ui form" data-tea-success="success" data-tea-action="$">
+        <csrf-token></csrf-token>
+
+        <input type="hidden" name="serverId" :value="serverId"/>
+        <table class="ui table selectable definition">
+            <tr>
+                <td class="title">当前绑定套餐</td>
+                <td>
+                    <span v-if="userPlan.id == 0" class="disabled">暂时还没有绑定套餐。
+                        <a href="" @click.prevent="update()" v-if="!isUpdating">[修改]</a>
+                        <a href="" @click.prevent="update()" v-if="isUpdating">[取消修改]</a>
+                    </span>
+                    <div v-else>
+                        {{userPlan.plan.name}}<span v-if="userPlan.name.length > 0">-{{userPlan.name}}</span> （到期时间：{{userPlan.dayTo}}）&nbsp;
+                        <a href="" @click.prevent="update()" v-if="!isUpdating">[修改]</a>
+                        <a href="" @click.prevent="update()" v-if="isUpdating">[取消修改]</a>
+                        <p class="comment" v-if="userPlan.isExpired"><a href="/plans"><span class="red">[已过期，请及时续费]</span></a></p>
+                    </div>
+                </td>
+            </tr>
+            <!-- 注意：必须使用v-if -->
+            <tr v-if="isUpdating">
+                <td>新套餐 *</td>
+                <td>
+                    <input type="hidden" name="isChanged" value="1"/>
+                    <span v-if="userPlans.length == 0" class="disabled">当前还没有可以使用的套餐。</span>
+                    <div v-else>
+                        <select class="ui dropdown auto-width" name="userPlanId" v-model="newUserPlanId" @change="changeUserPlan">
+                            <option value="0">[不使用套餐]</option>
+                            <option v-for="userPlan in userPlans" :value="userPlan.id">{{userPlan.name}}（{{userPlan.dayTo}}）</option>
+                        </select>
+                        <p class="comment" v-if="newUserPlanId > 0 && newUserPlanId == userPlan.id">当前正在使用的套餐。</p>
+                    </div>
+                </td>
+            </tr>
+            <tr v-if="isUpdating && newUserPlan != null">
+                <td>所选套餐限制</td>
+                <td>
+                    <div v-if="newUserPlan != null && newUserPlanDescription.length > 0">
+                        {{newUserPlanDescription}}
+                    </div>
+                    <div v-else><span class="disabled">没有限制</span></div>
+
+                    <div v-if="newUserPlanLimit.length > 0 && newUserPlanId != userPlan.id">
+                        <span class="red">{{newUserPlanLimit}}</span>
+                    </div>
+                </td>
+            </tr>
+
+            <tbody v-if="!isUpdating && hasTrafficLimit">
+                <tr v-if="userPlan.plan.trafficLimit.dailySize != null && userPlan.plan.trafficLimit.dailySize.count > 0">
+                    <td>套餐日流量限制</td>
+                    <td>
+                        <size-capacity-view :v-value="userPlan.plan.trafficLimit.dailySize"></size-capacity-view>
+                        <p class="comment">当天流量：{{trafficDailyFormat}}</p>
+                    </td>
+                </tr>
+                <tr v-if="userPlan.plan.trafficLimit.monthlySize != null && userPlan.plan.trafficLimit.monthlySize.count > 0">
+                    <td>套餐月流量限制</td>
+                    <td>
+                        <size-capacity-view :v-value="userPlan.plan.trafficLimit.monthlySize"></size-capacity-view>
+                        <p class="comment">当月流量：{{trafficMonthlyFormat}}</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <submit-btn v-show="newUserPlanLimit.length == 0 && newUserPlanId != userPlan.id"></submit-btn>
+        <button class="ui button disabled" type="button" v-if="newUserPlanLimit.length > 0 || newUserPlanId == userPlan.id">保存</button>
+    </form>
+</div>

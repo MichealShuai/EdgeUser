@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    {$if eq .faviconFileId 0}
+    <link rel="shortcut icon" href="/images/favicon.png"/>
+    {$else}
+    <link rel="shortcut icon" href="/ui/image/{$ .faviconFileId}"/>
+    {$end}
+    <title>找回密码 - {$.systemName}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    {$TEA.VUE}
+    {$TEA.SEMANTIC}
+    <link rel="stylesheet" type="text/css" href="/_/@default/@layout_override.css" media="all"/>
+    <script type="text/javascript" src="/js/md5.min.js"></script>
+    <script type="text/javascript" src="/js/utils.min.js"></script>
+    <script type="text/javascript" src="/js/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <script type="text/javascript" src="/js/components.js?v=1.0.0"></script>
+</head>
+<body>
+<div>
+    {$template "/menu"}
+
+    <div class="form-box">
+        <form class="ui form" data-tea-action="$" data-tea-success="success" data-tea-before="before">
+            <csrf-token></csrf-token>
+            <input type="hidden" name="action" v-model="action"/>
+            <table class="ui table definition selectable">
+                <tr v-show="!isSent">
+                    <td class="title">用户名或邮箱 *</td>
+                    <td>
+                        <input type="text" name="usernameOrEmail" placeholder="用户名、邮箱" ref="focus" v-model="nameOrEmail"/>
+                        <p class="comment">请输入你的用户名或者已经绑定的邮箱。</p>
+                    </td>
+                </tr>
+                <tbody v-show="isSent">
+                    <tr>
+                        <td class="title">用户名或邮箱</td>
+                        <td>{{nameOrEmail}}</td>
+                    </tr>
+                    <tr>
+                        <td>验证码 *</td>
+                        <td>
+                            <input type="text" name="code" style="width: 6em" maxlength="6" ref="verifyCodeInput"/>
+                            <p class="comment"><span class="red">6位数字验证码已经发送到邮箱{{email}}，请查收。</span></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>新登录密码 *</td>
+                        <td>
+                            <input type="password" name="newPass" maxlength="100"/>
+                            <p class="comment">长度不小于6位<span v-if="complexPassword">，且必须包含大写字母和小写字母</span>。</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>确认新登录密码 *</td>
+                        <td>
+                            <input type="password" name="newPass2" maxlength="100"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <submit-btn v-show="!isSent">下一步</submit-btn>
+            <submit-btn v-show="isSent">保存新密码</submit-btn>
+            &nbsp; <a href="/login">回登录页</a>
+        </form>
+    </div>
+</div>
+</body>

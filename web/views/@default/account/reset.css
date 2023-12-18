@@ -1,0 +1,40 @@
+@media screen and (min-width: 512px) {
+  .form-box {
+    position: fixed;
+    top: 2.5em;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  form {
+    position: fixed;
+    width: 30em;
+    top: 50%;
+    left: 50%;
+    margin-left: -15em;
+    margin-top: -16em;
+  }
+}
+@media screen and (max-width: 512px) {
+  .form-box {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+}
+table td.title {
+  width: 10em;
+}
+table td {
+  vertical-align: top;
+}
+p.comment,
+div.comment {
+  color: rgba(0, 0, 0, 0.5);
+  padding-top: 0.4em;
+  font-size: 1em;
+}
+span.red,
+pre.red {
+  color: #db2828;
+}
+/*# sourceMappingURL=reset.css.map */

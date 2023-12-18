@@ -1,0 +1,38 @@
+{$layout}
+
+<!-- 步骤 -->
+<div class="ui steps fluid">
+    <div class="step">
+        <a href="/anti-ddos/packages">选择实例规格</a>
+    </div>
+    <div class="step active">
+        <strong>支付</strong>
+    </div>
+</div>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+
+    <input type="hidden" name="packageId" :value="packageId"/>
+    <input type="hidden" name="periodId" :value="periodId"/>
+    <input type="hidden" name="count" :value="count"/>
+
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">高防实例</td>
+            <td>[{{packageSummary}} / {{periodName}}] x {{count}}</td>
+        </tr>
+        <tr>
+            <td>价格</td>
+            <td>￥{{amount}}元</td>
+        </tr>
+        <tr>
+            <td>支付方式</td>
+            <td>
+                <pay-method-selector></pay-method-selector>
+            </td>
+        </tr>
+    </table>
+
+    <submit-btn v-show="amount > 0">确定购买</submit-btn><span class="red" v-if="amount == 0">参数错误，请返回重新选择。</span> &nbsp; <a href="/anti-ddos/packages">上一步</a>
+</form>

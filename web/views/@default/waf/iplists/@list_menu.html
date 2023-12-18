@@ -1,0 +1,6 @@
+<first-menu>
+    <menu-item :href="'/waf/iplists'" code="import">所有</menu-item>
+    <span class="disabled item">|</span>
+    <menu-item :href="'/waf/iplists/list?listId=' + list.id" code="list">"{{list.name}}"详情</menu-item>
+    <menu-item :href="'/waf/iplists/items?listId=' + list.id" code="item">IP({{list.countItems}})</menu-item>
+</first-menu>

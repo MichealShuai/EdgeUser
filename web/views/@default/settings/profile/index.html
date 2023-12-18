@@ -1,0 +1,61 @@
+{$layout}
+
+<div class="margin"></div>
+
+<p class="ui message warning" v-if="!user.isVerified">请耐心等待管理员审核。</p>
+<p class="ui message error" v-if="user.isVerified && user.isRejected">注册信息被拒绝<span v-if="user.rejectReason.length > 0">原因：{{user.rejectReason}}</span>。</p>
+
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+	<table class="ui table definition selectable">
+        <tr>
+            <td class="title">联系手机号 *</td>
+            <td>
+                <input type="text" name="mobile" maxlength="11" placeholder="手机号" v-model="user.mobile"/>
+            </td>
+        </tr>
+        <tr>
+            <td>已绑定手机号码</td>
+            <td>
+                <span v-if="user.verifiedMobile.length > 0">{{user.verifiedMobile}} &nbsp; <a href="/settings/mobile-verify" v-if="mobileRequireVerification" style="font-size: 0.8em">[修改]</a></span>
+                <span class="disabled" v-else>没有设置 &nbsp;  &nbsp; <a href="/settings/mobile-verify" v-if="mobileRequireVerification" style="font-size: 0.8em">[设置]</a></span>
+                <p class="comment">用于登录系统、找回密码等。</p>
+            </td>
+        </tr>
+    </table>
+
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">常用电子邮箱</td>
+            <td>
+                <input type="text" name="email" maxlength="100" placeholder="常用电子邮箱" v-model="user.email"/>
+                <p class="comment">用于接收系统通知、账单提醒等。</p>
+            </td>
+        </tr>
+        <tr v-if="user.verifiedEmail.length > 0 || latestEmailVerification == null">
+            <td>已绑定电子邮箱</td>
+            <td>
+                <span v-if="user.verifiedEmail.length > 0">{{user.verifiedEmail}} &nbsp; <a href="/settings/email-verify" v-if="emailRequireVerification" style="font-size: 0.8em">[修改]</a></span>
+                <span class="disabled" v-else>没有设置 &nbsp;  &nbsp; <a href="/settings/email-verify" v-if="emailRequireVerification" style="font-size: 0.8em">[设置]</a></span>
+                <p class="comment">用于登录系统、找回密码等。</p>
+            </td>
+        </tr>
+        <tr v-if="latestEmailVerification != null">
+            <td>等待绑定邮箱</td>
+            <td>
+                <span>{{latestEmailVerification.email}} &nbsp; <a href="/settings/email-verify" v-if="emailRequireVerification" style="font-size: 0.8em">[修改]</a></span>
+                <p class="comment" v-if="!latestEmailVerification.isSent">系统正在发送绑定链接到此邮箱中，请耐心等待。</p>
+                <p class="comment" v-if="latestEmailVerification.isSent"><span class="red">请在{{latestEmailVerification.expiresTime}}前点击邮件中的激活链接进行绑定。</span></p>
+            </td>
+        </tr>
+    </table>
+
+    <table class="ui table definition selectable">
+		<tr>
+			<td class="title">用户姓名或者公司名称 *</td>
+			<td>
+				<input type="text" name="fullname" maxlength="50" ref="focus" v-model="user.fullname" placeholder="用户姓名或者公司名称"/>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>

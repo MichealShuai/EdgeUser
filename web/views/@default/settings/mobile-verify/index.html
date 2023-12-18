@@ -1,0 +1,52 @@
+{$layout}
+
+<form class="ui form" data-tea-action="$" data-tea-before="beforeSend" data-tea-done="doneSend" data-tea-success="success" v-show="!isSent">
+    <csrf-token></csrf-token>
+
+    <div class="ui message" v-if="!canVerify">系统暂未开通绑定手机号码功能。</div>
+    <div v-show="canVerify">
+        <div class="margin"></div>
+        <table class="ui table definition selectable">
+            <tr v-if="verifiedMobile.length > 0">
+                <td class="title">已绑定手机号码</td>
+                <td>
+                    <span>{{verifiedMobile}}</span>
+                </td>
+            </tr>
+            <tr v-show="isModifying">
+                <td class="title"><span v-if="verifiedMobile.length > 0">新</span>绑定手机号码 *</td>
+                <td>
+                    <input type="text" name="mobile" maxlength="11" ref="focus" style="width: 11em" v-model="newMobile" @input="changeMobile"/>
+                </td>
+            </tr>
+        </table>
+        <div v-show="isModifying && !isSending">
+            <submit-btn v-show="mobileIsValid">发送短信验证</submit-btn>
+            <button class="ui button disabled" type="button" v-show="!mobileIsValid">发送短信验证</button>
+            &nbsp; <a href="/settings/profile" v-if="verifiedMobile.length > 0">不修改</a>
+        </div>
+        <div v-show="isSending">
+            <button class="ui button disabled" type="button">短信发送中...</button>
+        </div>
+    </div>
+</form>
+
+<form class="ui form" data-tea-action=".verify" data-tea-success="verifySuccess" v-show="isSent">
+    <input type="hidden" name="mobile" :value="newMobile"/>
+    <div class="margin"></div>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title"><span v-if="verifiedMobile.length > 0">新</span>绑定手机号码 *</td>
+            <td>{{newMobile}} &nbsp; <a href="/settings/mobile-verify"><span class="small">[修改]</span></a> </td>
+        </tr>
+        <tr>
+            <td>短信验证码</td>
+            <td>
+                <input type="text" name="code" v-model="code" :maxlength="smsCodeLength" :style="{'width':smsCodeLength + 'em'}" ref="smsCodeRef" @input="changeCode"/>
+                <p class="comment">请输入短信中{{smsCodeLength}}位数字验证码。</p>
+            </td>
+        </tr>
+    </table>
+    <submit-btn v-show="codeIsValid">提交验证</submit-btn>
+    <button class="ui button disabled" type="button" v-show="!codeIsValid">提交验证</button>
+</form>

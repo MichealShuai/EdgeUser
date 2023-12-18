@@ -1,0 +1,120 @@
+{$layout}
+{$template "menu"}
+
+<second-menu>
+    <menu-item v-if="supportBandwidth" :class="{active: priceType == 'bandwidth'}" @click.prevent="setPriceType('bandwidth')">带宽价格</menu-item>
+    <menu-item v-if="supportTraffic" :class="{active: priceType == 'traffic'}" @click.prevent="setPriceType('traffic')">流量价格</menu-item>
+</second-menu>
+
+<!-- 带宽 -->
+<div v-if="supportBandwidth && priceType == 'bandwidth'">
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">带宽基础价格</td>
+            <td>{{bandwidthPrices.base}}元/Mbps</td>
+        </tr>
+        <tr>
+            <td>带宽百分位</td>
+            <td> {{bandwidthPrices.percentile}}th
+                <p class="comment" v-if="bandwidthPrices.percentile < 100">采用计费周期内第{{bandwidthPrices.percentile}}%个计费点作为计费依据。</p>
+                <p class="comment" v-else>采用计费周期内最大峰值带宽作为计费依据。</p>
+            </td>
+        </tr>
+        <tr v-if="bandwidthPrices.ranges != null && bandwidthPrices.ranges.length > 0">
+            <td>基础阶梯价格</td>
+            <td>
+                <table class="ui table selectable celled" style="width: 20em">
+                    <thead class="full-width">
+                    <tr>
+                        <th>带宽区间</th>
+                        <th>单价</th>
+                    </tr>
+                    </thead>
+                    <tr v-for="range in bandwidthPrices.ranges">
+                        <td><span v-if="range.minMB == 0">0bps</span><span v-else>{{formatMB(range.minMB)}}</span>-{{formatMB(range.maxMB)}}</td>
+                        <td>{{range.pricePerMB}}元/Mbps</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div v-if="bandwidthPrices.supportRegions && regions.length > 0 && bandwidthItems.length > 0">
+        <h4>区域带宽价格</h4>
+
+        <table class="ui table selectable small definition celled">
+            <thead class="full-width">
+            <tr>
+                <th class="two wide">区域\带宽区间</th>
+                <th v-for="item in bandwidthItems" class="center">
+                    {{item.name}}
+                    <br/>
+                    <span>{{item.minSize}}-{{item.maxSize}}</span>
+                </th>
+            </tr>
+            </thead>
+            <tr v-for="region in regions" v-show="region.supportBandwidth">
+                <td class="">{{region.name}}</td>
+                <td v-for="item in bandwidthItems" class="center">
+                    <div>
+                        <span v-if="region.prices[item.id.toString()] != null">¥{{region.prices[item.id.toString()]}}元/Mbps &nbsp;</span>
+                        <span v-else class="disabled">[基础阶梯价格]</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- 流量 -->
+<div v-if="supportTraffic && priceType == 'traffic'">
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">流量基础价格</td>
+            <td>{{trafficPrices.base}}元/GB</td>
+        </tr>
+        <tr v-if="trafficPrices.ranges != null && trafficPrices.ranges.length > 0">
+            <td>基础阶梯价格</td>
+            <td>
+                <table class="ui table selectable celled" style="width: 20em">
+                    <thead class="full-width">
+                        <tr>
+                            <th>流量区间</th>
+                            <th>单价</th>
+                        </tr>
+                    </thead>
+                    <tr v-for="range in trafficPrices.ranges">
+                        <td><span v-if="range.minGB == 0">0B</span><span v-else>{{formatGB(range.minGB)}}</span>-{{formatGB(range.maxGB)}}</td>
+                        <td>{{range.pricePerGB}}元/GB</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div v-if="trafficPrices.supportRegions && regions.length > 0 && trafficItems.length > 0">
+        <h4>区域流量价格</h4>
+
+        <table class="ui table selectable small definition celled">
+            <thead class="full-width">
+            <tr>
+                <th class="two wide">区域\流量区间</th>
+                <th v-for="item in trafficItems" class="center">
+                    {{item.name}}
+                    <br/>
+                    <span>{{item.minSize}}-{{item.maxSize}}</span>
+                </th>
+            </tr>
+            </thead>
+            <tr v-for="region in regions" v-show="region.supportTraffic">
+                <td class="">{{region.name}}</td>
+                <td v-for="item in trafficItems" class="center">
+                    <div>
+                        <span v-if="region.prices[item.id.toString()] != null">¥{{region.prices[item.id.toString()]}}元/GB &nbsp;</span>
+                        <span v-else class="disabled">[基础阶梯价格]</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

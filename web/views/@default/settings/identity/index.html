@@ -1,0 +1,39 @@
+{$layout}
+
+<div class="identities-box">
+    <!-- 个人认证 -->
+    <div class="identity-box" @click.prevent="goIndividual">
+        <h4>个人实名认证</h4>
+
+        <div v-if="individualIdentity != null">
+            <div><a href="" class="real-name">{{individualIdentity.realName}}</a></div>
+            <div class="status-box">
+                <span v-if="individualIdentity.status == 'none'">等待提交</span>
+                <span v-if="individualIdentity.status == 'submitted'">审核中</span>
+                <span v-if="individualIdentity.status == 'rejected'" class="red">已驳回</span>
+                <span v-if="individualIdentity.status == 'verified'" class="green">已认证</span>
+            </div>
+        </div>
+        <div v-else>
+             <a href="">尚未提交认证 &raquo;</a>
+        </div>
+    </div>
+
+    <!-- 企业认证 -->
+    <div class="identity-box" @click.prevent="goEnterprise">
+        <h4>企业实名认证</h4>
+
+        <div v-if="enterpriseIdentity != null">
+            <div><a href="" class="real-name">{{enterpriseIdentity.realName}}</a></div>
+            <div class="status-box">
+                <span v-if="enterpriseIdentity.status == 'none'">等待提交</span>
+                <span v-if="enterpriseIdentity.status == 'submitted'">审核中</span>
+                <span v-if="enterpriseIdentity.status == 'rejected'" class="red">已驳回</span>
+                <span v-if="enterpriseIdentity.status == 'verified'" class="green">已认证</span>
+            </div>
+        </div>
+        <div v-else>
+            <a href="">尚未提交认证 &raquo;</a>
+        </div>
+    </div>
+</div>

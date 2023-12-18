@@ -1,0 +1,68 @@
+{$layout}
+
+<div v-if="bills.length > 0" style="margin-top: 1em">
+   <p>未支付账单总额：{{unpaidAmount}}元，账号总余额为：{{accountTotal}}元。<a href="/finance/charge"><span class="red" v-if="unpaidAmount > accountTotal">您的余额已不足以支付账单，请及时充值。</span></a></p>
+    <div class="margin"></div>
+</div>
+
+<form class="ui form" method="get" action="/finance/bills">
+    <div class="ui fields inline">
+        <div class="ui field">
+            <select class="ui dropdown selectable" name="paidFlag" v-model="paidFlag">
+                <option value="-1">[支付状态]</option>
+                <option value="0">未支付</option>
+                <option value="1">已支付</option>
+            </select>
+        </div>
+        <div class="ui field">
+            <button class="ui button" type="submit">搜索</button>
+        </div>
+    </div>
+</form>
+
+<p class="comment" v-if="bills.length == 0">暂时还没有账单。</p>
+
+<table class="ui table selectable celled" v-if="bills.length > 0">
+    <thead>
+        <tr>
+            <th>账单编号</th>
+            <th style="width: 6em">结算周期</th>
+            <th style="width: 6em">月份</th>
+            <th style="width: 8em">日期</th>
+            <th style="width: 8em">项目</th>
+            <th style="width: 8em">金额</th>
+            <th style="width: 6em">已支付</th>
+            <th class="one op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="bill in bills">
+        <td>
+            <a :href="'/finance/bills/bill?code=' + bill.code">{{bill.code}}</a>
+            <div v-if="bill.isOverdue">
+                <span class="ui red basic small">逾期</span>
+            </div>
+        </td>
+        <td>{{bill.pricePeriodName}}</td>
+        <td>{{bill.month}}</td>
+        <td>
+            <span v-if="bill.pricePeriod == 'daily'">
+                <span v-if="bill.dayFrom == bill.dayTo">{{bill.dayFrom}}</span>
+                <span v-else>{{bill.dayFrom}} - {{bill.dayTo}}</span>
+            </span>
+        </td>
+        <td>{{bill.typeName}}</td>
+        <td><span :class="{disabled: bill.amount == 0}">¥{{bill.amount}}元</span>
+            <span class="grey small" v-if="!bill.canPay"><br/>预估</span>
+        </td>
+        <td>
+            <span class="green" v-if="bill.isPaid">Y</span>
+            <span v-else class="disabled">N</span>
+        </td>
+        <td>
+            <a href="" v-if="!bill.isPaid && bill.canPay" @click.prevent="payBill(bill.id)">支付</a>
+            <span v-if="bill.isPaid" class="disabled" title="已支付，无需重复支付">支付</span>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>

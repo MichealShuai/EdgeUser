@@ -1,0 +1,22 @@
+{$layout}
+{$template "menu"}
+
+<div class="margin"></div>
+<div><span class="grey">预热缓存指的是预先从源站读取最新内容，当用户访问预热后的URL时直接从缓存中返回内容，不需要再次回源。</span></div>
+
+<form class="ui form" method="post" data-tea-action="$" data-tea-success="success" data-tea-done="done" data-tea-timeout="600" data-tea-before="before">
+    <csrf-token></csrf-token>
+    <table class="ui table selectable definition">
+        <tr>
+            <td class="title">
+                URL列表 *
+            </td>
+            <td>
+                <textarea rows="20" name="urlList" ref="focus"></textarea>
+                <p class="comment">每行一条，每次最多提交{{maxKeysPerTask}}个URL，每天最多提交{{maxKeysPerDay}}个<span v-if="quotaKeysToday > 0">，今日剩余{{quotaKeysToday}}个</span>。</p>
+            </td>
+        </tr>
+    </table>
+    <submit-btn v-if="!isRequesting">预热缓存</submit-btn>
+    <button class="ui button disabled" type="button" v-if="isRequesting">处理中...</button>
+</form>

@@ -1,0 +1,52 @@
+{$layout}
+{$template "/echarts"}
+
+<p class="ui message warning" v-if="emailVerificationMessage.length > 0"><a href="/settings/email-verify">{{emailVerificationMessage}}</a></p>
+<p class="ui message warning" v-if="mobileVerificationMessage.length > 0"><a href="/settings/mobile-verify">{{mobileVerificationMessage}}</a></p>
+<p class="ui message warning" v-if="!isVerified">您的账号正在审核中，请耐心等待完成，暂时不能使用相关功能。</p>
+<p class="ui message warning" v-if="!isIdentified"><a href="/settings/identity">实名认证</a>后才能使用相关功能。</p>
+
+<div class="ui message loading" v-if="isLoading">
+    <div class="ui active inline loader small"></div>  &nbsp; 数据加载中...
+</div>
+
+<columns-grid class="ui columns grid counter-chart" :class="{'three columns': !uiConfig.showTrafficCharts || !uiConfig.showBandwidthCharts, 'four columns': uiConfig.showTrafficCharts && uiConfig.showBandwidthCharts }" v-if="!isLoading">
+    <div class="ui column">
+        <h4>加速网站数量</h4>
+        <div class="value"><span>{{dashboard.countServers}}</span>个</div>
+    </div>
+
+    <div class="ui column" v-if="uiConfig.showTrafficCharts">
+        <h4>本月总流量</h4>
+        <div class="value"><span>{{dashboard.monthlyTrafficBytes}}</span>{{dashboard.monthlyTrafficBytesUnit}}</div>
+    </div>
+
+    <div class="ui column" v-if="uiConfig.showBandwidthCharts">
+        <h4>本月带宽峰值</h4>
+        <div class="value"><span>{{dashboard.monthlyPeekBandwidthBytes}}</span>{{dashboard.monthlyPeekBandwidthBytesUnit}}</div>
+    </div>
+
+    <div class="ui column with-border" v-if="uiConfig.showTrafficCharts">
+        <h4>今日流量</h4>
+        <div class="value"><span>{{dashboard.dailyTrafficBytes}}</span>{{dashboard.dailyTrafficBytesUnit}}</div>
+    </div>
+
+    <div class="ui column with-border" v-if="uiConfig.showBandwidthCharts">
+        <h4>今日带宽峰值</h4>
+        <div class="value"><span>{{dashboard.dailyPeekBandwidthBytes}}</span>{{dashboard.dailyPeekBandwidthBytesUnit}}</div>
+    </div>
+</columns-grid>
+
+<div v-if="uiConfig.showTrafficCharts && !isLoading">
+    <div class="ui divider"></div>
+
+    <h4>近 30 日流量趋势 <span>（单位：字节）</span></h4>
+    <div class="chart-box" id="daily-traffic-chart"></div>
+</div>
+
+<div v-if="uiConfig.showBandwidthCharts && !isLoading">
+    <div class="ui divider"></div>
+
+    <h4>近 30 日带宽趋势</h4>
+    <div class="chart-box" id="daily-peek-bandwidth-chart"></div>
+</div>

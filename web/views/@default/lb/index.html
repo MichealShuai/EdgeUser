@@ -1,0 +1,67 @@
+{$layout}
+{$template "menu"}
+
+<div class="ui message error" v-if="!serversIsEnabled">
+    当前账号下的网站不可用，请检查账号状态以及是否有逾期未支付的账单。
+</div>
+
+<div class="ui message warning" v-if="serversIsEnabled && countUnpaidBills > 0">
+    <a href="/finance/bills?paidFlag=0">有逾期未支付的账单，可能会影响你的CDN服务正常运行，请尽快完成支付。</a>
+</div>
+
+<p class="comment" v-if="servers.length == 0">暂时还没有任何负载均衡服务。</p>
+
+<table class="ui table selectable" v-if="servers.length > 0">
+    <thead>
+        <tr>
+            <th>网站名称</th>
+            <th>CNAME</th>
+            <th v-if="supportTCP">TCP</th>
+            <th v-if="supportTCP">TLS</th>
+            <th v-if="supportUDP">UDP</th>
+            <th>状态</th>
+            <th class="three op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="server in servers">
+        <td><a :href="'/lb/server?serverId=' + server.id">{{server.name}}</a>
+
+            <div v-if="server.userPlan != null && server.userPlan.id > 0">
+                <span style="margin-top: 1em" class="small" :class="{grey: !server.userPlan.isExpired, red: server.userPlan.isExpired}">套餐：{{server.userPlan.name}} / {{server.userPlan.dayTo}} <span v-if="server.userPlan.isExpired">已过期</span></span>
+            </div>
+            <div v-if="server.trafficLimitStatus != null">
+                <server-traffic-limit-status-viewer v-model="server.trafficLimitStatus"></server-traffic-limit-status-viewer>
+            </div>
+        </td>
+        <td>{{server.cname}}</td>
+        <td v-if="supportTCP">
+            <div v-if="server.tcpPorts.length > 0">
+                <span v-for="port in server.tcpPorts" class="ui label basic small">{{port}}</span>
+            </div>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td v-if="supportTCP">
+            <div v-if="server.tlsPorts.length > 0">
+                <span  v-for="port in server.tlsPorts" class="ui label basic small">{{port}}</span>
+            </div>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td v-if="supportUDP">
+            <div v-if="server.udpPorts.length > 0">
+                <span v-for="port in server.udpPorts" class="ui label basic small">{{port}}</span>
+            </div>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td>
+            <span v-if="!server.isOn" class="grey">停用中</span>
+            <span v-else class="green">正常</span>
+        </td>
+        <td>
+            <a :href="'/lb/server?serverId=' + server.id">管理</a> &nbsp;
+            <a href="" v-if="server.isOn" @click.prevent="updateServerOff(server.id)">停用</a><a href="" v-if="!server.isOn" @click.prevent="updateServerOn(server.id)">启用</a> &nbsp;
+            <a href=""  @click.prevent="deleteServer(server.id)">删除</a>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>

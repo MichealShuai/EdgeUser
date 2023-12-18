@@ -1,0 +1,29 @@
+{$layout}
+{$template "/echarts"}
+
+<div class="ui four columns grid counter-chart">
+    <div class="ui column">
+        <h4>域名<link-icon href="/ns/domains"></link-icon></h4>
+        <div class="value"><span>{{board.countDomains}}</span>个</div>
+    </div>
+    <div class="ui column">
+        <h4>记录<link-icon href="/ns/domains"></link-icon></h4>
+        <div class="value"><span>{{board.countRecords}}</span>个</div>
+    </div>
+    <div class="ui column">
+        <h4>线路<link-icon href="/ns/routes"></link-icon></h4>
+        <div class="value"><span>{{board.countRoutes}}</span>个</div>
+    </div>
+    <div class="ui column with-border">
+        <h4>套餐<link-icon href="/ns/plans"></link-icon></h4>
+        <div class="value"><span>{{board.countNodes}}</span>
+            <span v-if="board.planName.length > 0">{{board.planName}}</span>
+            <span v-if="board.planName.length == 0">未购套餐</span>
+        </div>
+    </div>
+</div>
+
+<!-- 域名排行 -->
+<h4>域名访问排行 <span>（24小时）</span></h4>
+<div class="chart-box" id="top-domains-chart"></div>
+<div class="ui divider"></div>

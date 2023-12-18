@@ -1,0 +1,64 @@
+syntax = "proto3";
+option go_package = "./user";
+
+package user;
+
+service Service {
+// 登录
+rpc login (LoginRequest) returns (LoginResponse) {
+}
+
+// 创建操作日志
+rpc createLog (CreateLogRequest) returns (CreateLogResponse) {
+}
+
+// 检查User是否存在
+rpc checkUserExists (CheckUserExistsRequest) returns (CheckUserExistsResponse) {
+
+}
+
+// 获取User名称
+rpc findUserFullName (FindUserNameRequest) returns (FindUserNameResponse) {
+
+}
+}
+
+message LoginRequest {
+string username = 1;
+string password = 2;
+}
+
+message LoginResponse {
+int64 userId = 1;
+bool isOk = 2;
+string message = 3;
+}
+
+message CreateLogRequest {
+string level = 1;
+string description = 2;
+string action = 3;
+string ip = 4;
+}
+
+message CreateLogResponse {
+bool isOk = 1;
+}
+
+message CheckUserExistsRequest {
+int64 userId = 1;
+}
+
+message CheckUserExistsResponse {
+bool isOk = 1;
+string message = 2;
+}
+
+
+message FindUserNameRequest {
+int64 userId = 1;
+}
+
+message FindUserNameResponse {
+string fullName = 1;
+}

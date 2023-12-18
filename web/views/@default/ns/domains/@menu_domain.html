@@ -1,0 +1,14 @@
+<first-menu>
+    <menu-item href="/ns/domains">我的域名</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item :href="'/ns/domains/records?domainId=' + domain.id">{{domain.name}}</menu-item>
+    <menu-item :href="'/ns/domains/records?domainId=' + domain.id" code="record">解析记录({{domain.countRecords}})</menu-item>
+    <!--<menu-item :href="'/ns/domains/keys?domainId=' + domain.id" code="key">密钥({{domain.countKeys}})</menu-item>
+    <menu-item :href="'/ns/domains/tsig?domainId=' + domain.id" code="tsig">TSIG</menu-item>-->
+    <span class="item disabled">|</span>
+    <menu-item :href="'/ns/domains/update?domainId=' + domain.id" code="update">设置</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item :href="'/ns/domains/healthCheck?domainId=' + domain.id" code="healthCheck">健康检查<span class="small green" v-if="domain.enableHealthCheck">(启用)</span><span></span></menu-item>
+    <!--<menu-item :href="'/ns/domains/keys?domainId=' + domain.id" code="key">密钥({{domain.countKeys}})</menu-item>
+<menu-item :href="'/ns/domains/tsig?domainId=' + domain.id" code="tsig">TSIG</menu-item>-->
+</first-menu>

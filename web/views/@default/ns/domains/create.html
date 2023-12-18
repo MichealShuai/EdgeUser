@@ -1,0 +1,47 @@
+{$layout}
+{$template "menu"}
+
+<div v-if="!configIsValid">
+    <div class="margin"></div>
+    <p class="ui message error">管理员尚未完成系统配置，暂时无法添加域名，请联系客服。</p>
+</div>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success" v-show="configIsValid">
+    <csrf-token></csrf-token>
+    <input type="hidden" name="addingType" :value="addingType"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">域名 *</td>
+            <td>
+                <!-- 单个添加 -->
+                <div v-show="addingType == 'one'">
+                    <input type="text" name="name" maxlength="255" ref="nameInput" placeholder="单个域名"/>
+                    <p class="comment">
+                        <a href="" @click.prevent="setAddingType('batch')">[批量添加]</a>
+                    </p>
+                </div>
+
+                <!-- 批量添加 -->
+                <div v-show="addingType == 'batch'">
+                    <textarea rows="10" name="names" placeholder="每行一个域名" ref="namesInput"></textarea>
+                    <p class="comment">
+                        <a href="" @click.prevent="setAddingType('one')">[单个添加]</a>
+                    </p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><more-options-indicator></more-options-indicator></td>
+        </tr>
+        <tbody v-show="moreOptionsVisible">
+            <tr v-if="hasGroups">
+                <td>所属分组</td>
+                <td>
+                    <ns-domain-group-selector ref="groupSelector"></ns-domain-group-selector>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <submit-btn v-if="quotaCanCreate"></submit-btn>
+    <p class="ui message error" v-if="!quotaCanCreate">已添加域名个数已超出最大限额（{{quotaMaxDomains}}个域名），请升级套餐后重试。</p>
+</form>

@@ -1,0 +1,34 @@
+{$layout "layout_popup"}
+
+<h3>创建线路</h3>
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+    <input type="hidden" name="clusterId" :value="clusterId"/>
+    <input type="hidden" name="domainId" :value="domainId"/>
+    <input type="hidden" name="userId" :value="userId"/>
+
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">线路名称 *</td>
+            <td>
+                <input type="text" name="name" maxlength="100" ref="focus"/>
+            </td>
+        </tr>
+        <tr>
+            <td rowspan="2">范围类型</td>
+            <td>
+                <select class="ui dropdown auto-width" v-model="rangeTypeCode" @change="changeRangeType">
+                    <option v-for="rangeType in rangeTypes" :value="rangeType.code">{{rangeType.name}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <ns-route-ranges-box ref="routeRangesBox"></ns-route-ranges-box>
+            </td>
+        </tr>
+    </table>
+
+    <submit-btn v-if="quotaCanCreate"></submit-btn>
+    <p class="ui message error" v-if="!quotaCanCreate">已添加线路个数已超出最大限额（{{quotaMaxCustomRoutes}}个线路），请升级套餐后重试。</p>
+</form>

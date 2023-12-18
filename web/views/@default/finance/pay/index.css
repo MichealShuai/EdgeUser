@@ -1,0 +1,37 @@
+.pay-box {
+  position: relative;
+}
+.pay-box .pay-mask {
+  position: fixed;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.8);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+}
+.pay-box .pay-mask .inner-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -2em;
+  margin-left: -2em;
+}
+.pay-box .pay-mask .inner-box .qrcode-box {
+  padding: 1em 0;
+}
+.pay-box .pay-mask .inner-box .qrcode-box .qrcode-title-box {
+  color: white;
+  margin-bottom: 1em;
+}
+.pay-box .pay-mask .inner-box .qrcode-box img {
+  width: 16em;
+}
+.pay-box .pay-mask .inner-box.qrcode {
+  margin-top: -15em;
+}
+.pay-box .pay-mask .cancel {
+  margin-top: 1em;
+}
+/*# sourceMappingURL=index.css.map */

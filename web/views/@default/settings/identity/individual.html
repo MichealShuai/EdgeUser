@@ -1,0 +1,98 @@
+{$layout}
+
+<first-menu>
+    <menu-item href="/settings/identity">实名认证</menu-item>
+    <span class="item disabled">&raquo;</span>
+    <span class="item">个人实名认证</span>
+</first-menu>
+
+<form class="ui form" data-tea-action=".uploadIndividual" data-tea-timeout="600" data-tea-before="beforeSubmit" data-tea-done="doneSubmit" data-tea-success="success">
+    <csrf-token></csrf-token>
+
+    <input type="hidden" name="identityId" :value="identity.id" v-if="identity != null"/>
+
+    <table class="ui table selectable definition">
+        <tr>
+            <td class="title">真实姓名 *</td>
+            <td>
+                <div v-if="canEdit">
+                    <input type="text" name="realName" placeholder="真实姓名" maxlength="100" style="width: 10em" ref="focus" v-model="realName"/>
+                </div>
+                <div v-else>
+                    {{identity.realName}}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>身份证号 *</td>
+            <td>
+                <div v-if="canEdit">
+                    <input type="text" name="number" placeholder="身份证号" maxlength="18" style="width: 13em" v-model="number"/>
+                </div>
+                <div v-else>
+                    {{identity.number}}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>身份证 - 照片面 *<em>不超过8MB</em></td>
+            <td>
+                <input type="file" name="backFile" id="back-file" accept="image/jpeg, image/png" @change="changeBackFile"/>
+                <div class="idcard-bg">
+                    <img :src="'/files/file?fileId=' + identity.backFileId" v-if="identity != null && identity.backFileId > 0 && backPreviewURL.length == 0" alt=""/>
+                    <img :src="backPreviewURL" alt="" v-if="backPreviewURL.length > 0"/>
+                    <button type="button" class="ui button icon" v-if="canEdit" @click.prevent="selectFile('back-file')"><i class="icon plus"></i></button>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>身份证 - 国徽面 *<em>不超过8MB</em></td>
+            <td>
+                <input type="file" name="frontFile" id="front-file" accept="image/jpeg, image/png" @change="changeFrontFile"/>
+                <div class="idcard-bg">
+                    <img :src="'/files/file?fileId=' + identity.frontFileId" v-if="identity != null && identity.frontFileId > 0 && frontPreviewURL.length == 0" alt=""/>
+                    <img :src="frontPreviewURL" alt="" v-if="frontPreviewURL.length > 0"/>
+                    <button type="button" class="ui button icon" v-if="canEdit" @click.prevent="selectFile('front-file')"><i class="icon plus"></i></button>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div v-if="!isSubmitting">
+        <div>
+            <!-- 未上传 -->
+            <submit-btn v-if="identity == null">保存</submit-btn>
+        </div>
+
+        <div v-if="identity != null">
+            <!-- 待提交 -->
+            <div v-if="identity.status == 'none'">
+                <div class="ui message warning">已上传，请提交审核。</div>
+                <button class="ui button primary" type="submit">保存修改</button> &nbsp; &nbsp;
+                <a href="" @click.prevent="submit">提交审核</a>
+            </div>
+
+            <!-- 已提交 -->
+            <div v-if="identity.status == 'submitted'">
+                <div class="ui message warning">管理员审核中，请耐心等待。</div>
+                <a href="" class="ui button" @click.prevent="cancel">取消审核</a>
+            </div>
+
+            <!-- 已拒绝 -->
+            <div v-if="identity.status == 'rejected'">
+                <div class="ui message error">审核不通过，原因：{{identity.rejectReason}}。</div>
+                <button class="ui button" type="submit">保存修改</button> &nbsp; &nbsp;
+                <a href="" class="ui button primary" @click.prevent="submit">重新提交审核</a>
+            </div>
+
+            <!-- 已通过 -->
+            <div v-if="identity.status == 'verified'">
+                <div class="ui message success">实名认证审核通过。</div>
+            </div>
+        </div>
+
+
+    </div>
+    <div v-if="isSubmitting">
+        正在提交，请稍候...
+    </div>
+</form>

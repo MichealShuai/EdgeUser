@@ -1,0 +1,88 @@
+{$layout}
+
+<h4>我的套餐</h4>
+<span v-if="userPlan == null" class="grey">你尚未开通套餐服务<span v-if="plans.length > 0">，请选择下方套餐购买</span>。</span>
+<div v-if="userPlan != null">
+    <span v-if="userPlan.isExpired" class="red">当前套餐：{{userPlan.plan.name}} &nbsp; 状态：已于{{userPlan.dayTo}}过期。</span>
+    <span v-if="!userPlan.isExpired" class="green">当前套餐：{{userPlan.plan.name}}，有效期至：{{userPlan.dayTo}}</span>
+</div>
+
+<h4>所有套餐</h4>
+<table class="ui table selectable celled">
+    <thead>
+        <tr>
+            <th class="three wide">功能
+            &nbsp;<br/>&nbsp;
+            </th>
+            <th v-for="plan in plans" :class="{active: userPlan != null && userPlan.plan != null && plan.id == userPlan.plan.id}">{{plan.name}}<br/>
+                <span v-if="plan.id > 0">{{plan.monthlyPrice}}元/月</span><span v-else>&nbsp;</span><br/>
+                <span v-if="plan.id > 0">{{plan.yearlyPrice}}元/年</span><span v-else>&nbsp;</span>
+            </th>
+        </tr>
+    </thead>
+    <tr>
+        <td>全球线路</td>
+        <td v-for="plan in plans" :class="{active: userPlan != null && userPlan.plan != null && plan.id == userPlan.plan.id}">
+            <span v-if="plan.config.supportCountryRoutes" class="green">Y</span>
+        </td>
+    </tr>
+    <tr>
+        <td>国内省份线路</td>
+        <td v-for="plan in plans" :class="{active: userPlan != null && userPlan.plan != null && plan.id == userPlan.plan.id}">
+            <span v-if="plan.config.supportChinaProvinceRoutes" class="green">Y</span>
+        </td>
+    </tr>
+    <tr>
+        <td>ISP运营商线路</td>
+        <td v-for="plan in plans" :class="{active: userPlan != null && userPlan.plan != null && plan.id == userPlan.plan.id}">
+            <span v-if="plan.config.supportISPRoutes" class="green">Y</span>
+        </td>
+    </tr>
+    <tr>
+        <td>健康检查</td>
+        <td v-for="plan in plans" :class="{active: userPlan != null && userPlan.plan != null && plan.id == userPlan.plan.id}">
+            <span v-if="plan.config.supportHealthCheck" class="green">Y</span>
+        </td>
+    </tr>
+    <tr>
+        <td>最小TTL</td>
+        <td v-for="plan in plans" :class="{active: userPlan != null && userPlan.plan != null && plan.id == userPlan.plan.id}">
+            <span v-if="plan.config.minTTL > 0">{{plan.config.minTTL}}秒</span>
+            <span v-else class="grey">不限</span>
+        </td>
+    </tr>
+    <tr>
+        <td>域名数量限制</td>
+        <td v-for="plan in plans" :class="{active: userPlan != null && userPlan.plan != null && plan.id == userPlan.plan.id}">
+            <span v-if="plan.config.maxDomains > 0">{{plan.config.maxDomains}}个</span>
+            <span v-else class="grey">不限</span>
+        </td>
+    </tr>
+    <tr>
+        <td>单域名记录数限制</td>
+        <td v-for="plan in plans" :class="{active: userPlan != null && userPlan.plan != null && plan.id == userPlan.plan.id}">
+            <span v-if="plan.config.maxRecordsPerDomain > 0">{{plan.config.maxRecordsPerDomain}}个</span>
+            <span v-else class="grey">不限</span>
+        </td>
+    </tr>
+    <tr>
+        <td>单记录负载均衡条数限制</td>
+        <td v-for="plan in plans" :class="{active: userPlan != null && userPlan.plan != null && plan.id == userPlan.plan.id}">
+            <span v-if="plan.config.maxLoadBalanceRecordsPerRecord > 0">{{plan.config.maxLoadBalanceRecordsPerRecord}}个</span>
+            <span v-else class="grey">不限</span>
+        </td>
+    </tr>
+    <tr>
+        <td>自定义线路数量限制</td>
+        <td v-for="plan in plans" :class="{active: userPlan != null && userPlan.plan != null && plan.id == userPlan.plan.id}">
+            <span v-if="plan.config.maxCustomRoutes > 0">{{plan.config.maxCustomRoutes}}个</span>
+            <span v-else class="grey">不限</span>
+        </td>
+    </tr>
+    <tr v-if="userPlan == null || userPlan.isExpired">
+        <td></td>
+        <td v-for="plan in plans">
+            <a :href="'/ns/plans/buy?planId=' + plan.id" v-if="plan.id > 0">购买</a>
+        </td>
+    </tr>
+</table>

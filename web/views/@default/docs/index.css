@@ -1,0 +1,85 @@
+.doc-box {
+  line-height: 1.8;
+}
+.doc-box p {
+  line-height: 1.8;
+}
+.doc-box .toc-box {
+  width: 11em;
+  position: fixed;
+  top: 2.5em;
+  bottom: 0;
+  background: #F5F7FA;
+  margin-left: -1em;
+  border-right: 1px #eee solid;
+  overflow-y: auto;
+}
+.doc-box .toc-box ul {
+  list-style: none;
+  padding: 0;
+}
+.doc-box .toc-box ul li {
+  padding-left: 1em;
+}
+.doc-box .toc-box ul li li {
+  font-size: 0.9em;
+}
+.doc-box .toc-box a {
+  color: #333;
+}
+.doc-box .toc-box a.active {
+  color: #4183c4;
+}
+.doc-box .toc-box.right {
+  top: 3em;
+  right: 1em;
+  bottom: 0;
+  z-index: 10;
+  border-right: none;
+  border-left: 1px #eee solid;
+  background: white;
+}
+.doc-box .toc-box::-webkit-scrollbar {
+  width: 4px;
+}
+.doc-box .content-box {
+  margin-left: 11em;
+  margin-right: 11em;
+  padding-top: 1em;
+}
+.doc-box .content-box img {
+  max-width: 600px;
+  margin-top: 1em;
+}
+.doc-box .content-box h1,
+.doc-box .content-box h2,
+.doc-box .content-box h3,
+.doc-box .content-box h4,
+.doc-box .content-box h5,
+.doc-box .content-box h6 {
+  font-weight: normal;
+}
+.doc-box .content-box > ul,
+.doc-box .content-box > ol {
+  padding-left: 1.2em;
+}
+.doc-box .content-box > ul > li > ul,
+.doc-box .content-box > ol > li > ul {
+  padding-left: 1.6em;
+}
+.doc-box .content-box > ul > li > ul > li > ul,
+.doc-box .content-box > ol > li > ul > li > ul {
+  padding-left: 1.6em;
+}
+.doc-box .content-box code {
+  border: 1px #eee solid;
+  padding: 2px 1px;
+  font-size: 0.9em;
+}
+.doc-box .content-box pre code {
+  border: none;
+  background: #F4F7F9;
+  display: block;
+  padding: 4px 6px;
+}
+/*# sourceMappingURL=index.css.map */

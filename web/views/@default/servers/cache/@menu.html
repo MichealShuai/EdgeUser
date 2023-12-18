@@ -1,0 +1,6 @@
+<first-menu>
+    <menu-item href="/servers/cache" code="purge">刷新缓存</menu-item>
+    <menu-item href="/servers/cache/fetch" code="fetch">预热缓存</menu-item>
+    <span class="disabled item">|</span>
+    <menu-item href="/servers/cache/tasks" code="task">所有任务<span v-if="countDoingTasks > 0" class="grey">({{countDoingTasks}})</span></menu-item>
+</first-menu>

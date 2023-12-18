@@ -1,0 +1,21 @@
+{$layout}
+{$template "menu"}
+
+<div class="margin"></div>
+
+<form class="ui form">
+    <table class="ui table definition">
+        <tr>
+            <td class="title">计费方式</td>
+            <td>{{config.priceTypeName}}
+                &nbsp; &nbsp; <a href="" v-if="config.canChangeType" @click.prevent="updatePriceType">[修改]</a>
+            </td>
+        </tr>
+        <tr>
+            <td>计费周期</td>
+            <td>{{config.pricePeriodName}}
+                &nbsp; &nbsp; <a href="" v-if="config.canChangePeriod" @click.prevent="updatePricePeriod">[修改]</a>
+            </td>
+        </tr>
+    </table>
+</form>

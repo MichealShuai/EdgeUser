@@ -1,0 +1,37 @@
+{$layout}
+
+<div class="margin"></div>
+
+<div v-if="!config.enablePay">
+    <div class="ui message" v-if="config.disablePageHTML.length == 0">暂不提供在线充值功能，请联系管理员充值。</div>
+    <div v-if="config.disablePageHTML.length > 0" v-html="config.disablePageHTML"></div>
+</div>
+
+<div v-if="config.enablePay">
+    <form class="ui form" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <table class="ui table definition">
+            <tr>
+                <td class="title">充值金额 *</td>
+                <td>
+                    <div class="ui left labeled input">
+                        <span class="ui label">￥</span>
+                        <input type="text" name="amount" maxlength="10" style="width: 10em" ref="focus"/>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>选择支付方式 *</td>
+                <td>
+                    <div class="methods-box">
+                        <div class="method-box" :class="{active: methodCode == method.code}" v-for="method in methods" @click.event="selectMethod(method)">
+                            <radio name="methodCode" :value="method.code" :v-value="method.code" v-model="methodCode">{{method.name}}</radio>
+                            <p class="comment">{{method.description}}</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <submit-btn>下一步 &raquo;</submit-btn>
+    </form>
+</div>

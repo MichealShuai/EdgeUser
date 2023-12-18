@@ -1,0 +1,32 @@
+{$layout}
+{$template "menu"}
+
+<div class="margin"></div>
+<div><span class="grey">刷新缓存指的是标记URL列表或目录为失效状态，当有新的用户请求这些URL时，会再次从源站读取最新的内容。</span></div>
+
+<form class="ui form" method="post" data-tea-action="$" data-tea-success="success" data-tea-before="before" data-tea-done="done">
+    <csrf-token></csrf-token>
+    <table class="ui table selectable definition">
+        <tr>
+            <td class="title">刷新类型 *</td>
+            <td>
+                <select class="ui dropdown auto-width" name="keyType" v-model="keyType">
+                    <option value="key">URL</option>
+                    <option value="prefix">目录</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span v-if="keyType == 'key'">URL列表 *</span>
+                <span v-if="keyType == 'prefix'">目录列表 *</span>
+            </td>
+            <td>
+                <textarea rows="20" name="urlList" ref="keysBox"></textarea>
+                <p class="comment">每行一条，每次最多提交{{maxKeysPerTask}}个URL，每天最多提交{{maxKeysPerDay}}个<span v-if="quotaKeysToday > 0">，今日剩余{{quotaKeysToday}}个</span>。</p>
+            </td>
+        </tr>
+    </table>
+    <submit-btn v-if="!isRequesting">刷新缓存</submit-btn>
+    <button class="ui button disabled" type="button" v-if="isRequesting">处理中...</button>
+</form>

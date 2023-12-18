@@ -1,0 +1,33 @@
+{$layout}
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+
+    <div class="ui message" v-if="!canVerify">系统暂未开通绑定邮箱功能。</div>
+    <div v-show="canVerify">
+        <div class="margin"></div>
+        <table class="ui table definition selectable">
+            <tr v-if="verifiedEmail.length > 0">
+                <td class="title">已绑定电子邮箱</td>
+                <td>
+                    <span>{{verifiedEmail}}</span>
+                </td>
+            </tr>
+            <tr v-if="latestVerification != null">
+                <td>等待绑定邮箱</td>
+                <td>
+                    {{latestVerification.email}}
+                    <p class="comment" v-if="!latestVerification.isSent">系统正在发送激活链接到此邮箱中，请耐心等待。</p>
+                    <p class="comment" v-if="latestVerification.isSent"><span class="red">请在{{latestVerification.expiresTime}}前点击邮件中的激活链接进行绑定。</span></p>
+                </td>
+            </tr>
+            <tr>
+                <td class="title"><span v-if="verifiedEmail.length > 0">新</span>绑定电子邮箱 *</td>
+                <td>
+                    <input type="text" name="email" maxlength="100" ref="focus"/>
+                </td>
+            </tr>
+        </table>
+        <submit-btn>提交</submit-btn> &nbsp; <a href="/settings/profile" v-if="verifiedEmail.length > 0">不修改</a>
+    </div>
+</form>

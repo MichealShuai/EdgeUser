@@ -1,0 +1,10 @@
+#rpc.endpoints: ['http://127.0.0.1:8001']
+#rpc.disableUpdate: true
+#nodeId: 98ffbebb79427f6cbbd8d3082cff154a
+#secret: 9oojs19ezBEyvFYy1YyQkojytBxRBl0j
+
+rpc:
+  endpoints: [ "127.0.0.1:8001" ]
+  nodeId: "98ffbebb79427f6cbbd8d3082cff154a"
+  secret: "9oojs19ezBEyvFYy1YyQkojytBxRBl0j"
+

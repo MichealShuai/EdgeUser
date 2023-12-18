@@ -1,0 +1,12 @@
+
+default:
+  db: "dev"
+  prefix: ""
+
+dbs:
+  dev:
+    driver: "mysql"
+    dsn: "root:Wayl1234!@tcp(154.84.17.148:3306)/edges?charset=utf8mb4&timeout=30s"
+    prefix: "edge"
+    models:
+      package: internal/web/models
